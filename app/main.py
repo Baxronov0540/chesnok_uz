@@ -62,3 +62,7 @@ def user_delete(user_id:int):
         return JSONResponse(status_code=204) 
     except KeyError:
         return JSONResponse(status_code=404)     
+db=dict()
+
+@app.get("/user/filter/")
+def :
