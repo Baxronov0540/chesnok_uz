@@ -1,68 +1,78 @@
-from datetime import datetime
-import random
-import string
-
-from fastapi import FastAPI
-from fastapi import status
+from fastapi import FastAPI,Depends,HTTPException
 from fastapi.responses import JSONResponse
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
-app=FastAPI()
+from app.database import get_db
+from app.models import *
 
-user_db=dict()
+from app.utils import generate_slug
+from app.schemas import  PostCreateRequest,PostListResponse,PostUpdateRequest
 
-def generete_random_string(length):
-    characters=string.ascii_letters+string.digits
-    random_string="".join(random.choices(characters,k=length))
-    return random_string
+app=FastAPI(
+    title="Chesnokdan achiq haqiqatlar",
+    description="Chesnokuz - news website inspired from Qalampir.uz, built in FastAPI"
 
-@app.post("/users/create")
-def user_create():
-    user_id=random.randrange(1,1000)
-    name=generete_random_string(10)
-    age=random.randint(1,60)
-    is_active=random.choice([True,False])
+)
 
-    new_user={"id":user_id,
-              "name":name,
-              "age":age,
-              "is_active":is_active,
-              "created_at":datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-    user_db[user_id]=new_user
-    return new_user
 
-@app.get("/users/list/")
-def user_list():
-    return user_db
+@app.post("/post/create",response_model=PostListResponse)
+async def post_create(
+    create_data:PostCreateRequest,session:Session=Depends(get_db)):
+    post=Post(
+        title=create_data.title,
+        body=create_data.body,
+        slug=generate_slug(create_data.title)
+    )
+    session.add(post)
+    session.commit()
+    session.refresh(post)
 
-@app.get("/users/{user_id}/")
-def user_detail(user_id:int):
-    try:
-        return user_db[user_id]
-    
-    except KeyError:
-        return JSONResponse(
-            content={"error":"user not found"},status_code=404
+    return post
+@app.get("/get/list")
+async def get_list(sesssion:Session=Depends(get_db)):
 
-        )
+    stmt=select(Post).order_by(Post.created_at.desc())
+    res=sesssion.execute(stmt)
+    res=res.scalars()
 
-@app.put("/users/{user_id}/") 
-def user_update(user_id:int):
-    try:
-        user=user_db[user_id]
-        user["name"]=generete_random_string(10)
-        user["age"]=random.randint(1,60)
-        user_db[user_id]=user
-        return user
-    except KeyError:
+    return res.all()
+@app.put("/update/{post_id}/title",response_model=PostListResponse)
+def update_title(post_id: int, update_data:PostUpdateRequest,session: Session = Depends(get_db)):
+    stmt = select(Post).where(Post.id == post_id)
+    res = session.execute(stmt).scalar_one_or_none()
+    res.title=update_data.title
+    res.body=update_data.body
+    session.commit()
+    session.refresh(res)
+
+    if not res:
+        raise HTTPException(status_code=404, detail="Post topilmadi")
+
+    return res
+
+@app.delete("/delete/{post_id}/")
+async def post_delete(post_id:int,session:Session=Depends(get_db)):
+    stmt=select(Post).where(Post.id==post_id)
+    res=session.execute(stmt).scalar_one_or_none()
+    if not res:
         return JSONResponse(status_code=404)
-@app.delete("/users/{user_id}/")
-def user_delete(user_id:int):
-    try:
-        del user_db[user_id]
-        return JSONResponse(status_code=204) 
-    except KeyError:
-        return JSONResponse(status_code=404)     
-db=dict()
+    session.delete(res)
+    session.commit()
+@app.get("/get/{post_id}/",response_model=PostListResponse)
+async def post_one(post_id:int,session:Session=Depends(get_db)):
+    stmt=select(Post).where(Post.id==post_id)
+    res=session.execute(stmt).scalar_one_or_none()
+    if not res:
+        return JSONResponse(content={"detail": "Post topilmadi"},status_code=404)
+    
+    return res
 
-@app.get("/user/filter/")
-def :
+@app.get("/get/query")
+async def query_parametr(q:bool,session:Session=Depends(get_db)):
+    stmt=select(Post)
+    if stmt is not None:
+     stmt=stmt.where(Post.is_active==q)
+    stmt=stmt.order_by(Post.created_at.desc())
+    res=session.execute(stmt)
+    return res.scalars().all()

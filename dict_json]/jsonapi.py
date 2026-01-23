@@ -33,7 +33,7 @@ def save_data(data):
     with open(FILE_NAME, "w") as f:
         json.dump(data, f, indent=4)
 @app.post("/users")
-def create_user(user:UserC):
+def create_user(user:UserCreate):
     data = load_data()
 
     user_id = max([int(i) for i in data.keys()], default=0) + 1
@@ -114,7 +114,7 @@ def user_name_list(user_name:str):
         return JSONResponse(status_code=404) 
       
 @app.post("/order/create")
-def create_order(order:OrderC):
+def create_order(order:OrderCreate):
     data=load_data()
     id=max([int(i) for i in data.keys()],default=0)+1
     data[id]={
