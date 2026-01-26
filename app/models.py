@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import BigInteger,Integer,String,Boolean,ForeignKey,DateTime,func,Text
+from sqlalchemy import BigInteger,String,Boolean,ForeignKey,DateTime,func,Text
 from sqlalchemy.orm import Mapped,mapped_column,relationship
 from app.database import Base
 
@@ -58,7 +58,7 @@ class Post(BaseModel):
 class User(BaseModel):
     __tablename__="users"
 
-    proffesion_id:Mapped[str]=mapped_column(ForeignKey("proffesions.id"))
+    proffesion_id:Mapped[int]=mapped_column(ForeignKey("proffesions.id"))
     email:Mapped[str]=mapped_column(String(100),unique=True)
     avatar_id:Mapped[int]=mapped_column(ForeignKey("medias.id"),onupdate="SET NULL")
     password_hash:Mapped[str]=mapped_column(String(100),nullable=False)

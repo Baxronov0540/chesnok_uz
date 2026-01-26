@@ -3,6 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel
 
 class PostCreateRequest(BaseModel):
+    
     title:str
     body:str
     category_id:int
@@ -12,6 +13,7 @@ class PostCreateRequest(BaseModel):
 
 
 class PostListResponse(BaseModel):
+    
     id:int
     title:str
     slug:str
@@ -22,7 +24,9 @@ class PostListResponse(BaseModel):
     comments_count:int
     is_active:bool
     created_at:datetime
+
 class PostUpdateRequest(BaseModel):
+    
     title:str 
     body:str 
     is_active:bool  

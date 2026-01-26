@@ -10,6 +10,7 @@ dependencies = [
     "fastapi[standart]>=0.128.0",
     "psycopg2-binary>=2.9.11",
     "python-dotenv>=1.2.1",
+    "ruff>=0.14.14",
     "sqlalchemy>=2.0.45",
     "uvicorn>=0.40.0",
 ]
