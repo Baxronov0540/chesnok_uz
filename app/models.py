@@ -129,12 +129,14 @@ class Category(Base):
     posts: Mapped[list["Post"]] = relationship("Post", back_populates="category")
 
 
-class Comments(Base):
+class Comments(BaseModel):
     __tablename__ = "comments"
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     text: Mapped[str] = mapped_column(Text)
     post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"))
+    is_active:Mapped[bool]=mapped_column(Boolean,default=True)
+
 
     user: Mapped["User"] = relationship("User", back_populates="comments")
     post: Mapped["Post"] = relationship("Post", back_populates="comments")

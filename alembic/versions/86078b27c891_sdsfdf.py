@@ -101,7 +101,16 @@ def upgrade() -> None:
         sa.Column("user_id", sa.BigInteger(), nullable=False),
         sa.Column("text", sa.Text(), nullable=False),
         sa.Column("post_id", sa.BigInteger(), nullable=False),
-        sa.ForeignKeyConstraint(
+        sa.Column(
+        'is_active',
+        sa.Boolean(),
+        nullable=False,
+        server_default=sa.true()
+    ),
+       sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
+       sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
+
+       sa.ForeignKeyConstraint(
             ["post_id"],
             ["posts.id"],
         ),

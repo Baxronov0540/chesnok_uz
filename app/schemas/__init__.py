@@ -21,3 +21,9 @@ from .user_schema import (
     UserUpdateRequest,
     CookieData,
 )
+
+from .comments_schema import (
+    CommentCreateRequest,
+    CommentListResponse,
+    CommentUpdateRequest,
+)

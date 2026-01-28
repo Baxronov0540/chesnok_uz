@@ -72,5 +72,6 @@ class CookieData(BaseModel):
     key: str
     value: str
 
+
 class CokieTheme(BaseModel):
     pass

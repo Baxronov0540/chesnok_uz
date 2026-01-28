@@ -1,5 +1,4 @@
-from fastapi import APIRouter,HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException
 from sqlalchemy import select
 
 from app.database import db_deb
@@ -16,7 +15,6 @@ router = APIRouter(prefix="/category", tags=["Category"])
 
 @router.post("/create", response_model=CategoryListResponse)
 async def create_category(session: db_deb, create_data: CategoryCreateRequest):
-
     category = Category(name=create_data.name, slug=generate_slug(create_data.name))
     session.add(category)
     session.commit()
@@ -32,6 +30,7 @@ async def category_list(session: db_deb):
 
     return res
 
+
 @router.put("/update", response_model=CategoryListResponse)
 async def category_update(
     session: db_deb, category_id: int, update_data: CategoryUpdateRequest
@@ -44,7 +43,7 @@ async def category_update(
         session.commit()
         session.refresh(res)
         return res
-    raise HTTPException(status_code=404,detail="not found")
+    raise HTTPException(status_code=404, detail="not found")
 
 
 @router.delete("/delete/{category_id}/")

@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Response, Cookie
 from fastapi import HTTPException
 from enum import Enum
-from typing import Optional,Annotated
 from sqlalchemy import select
 
 from app.database import db_deb
@@ -123,28 +122,29 @@ def delete_cookie(response: Response):
     response.delete_cookie("user_token")
     return {"message": "Cookie o‘chirildi"}
 
+
 class ThemeEnum(str, Enum):
     LIGHT = "light"
     DARK = "dark"
+
+
 from fastapi import APIRouter, Response
 from enum import Enum
 
 
-
 class ThemeEnum(str, Enum):
     LIGHT = "light"
     DARK = "dark"
+
 
 @router.post("/theme/set")
 def set_theme(theme: ThemeEnum, response: Response):
     # Cookie ga o'rnatish
     response.set_cookie(
-        key="theme",
-        value=theme.value,
-        max_age=60*60*24*30,
-        httponly=False
+        key="theme", value=theme.value, max_age=60 * 60 * 24 * 30, httponly=False
     )
     return {"message": f"Tema {theme.value} ga o‘rnatildi"}
+
 
 @router.get("/theme/get")
 def get_theme(theme: str = Cookie(default="light")):

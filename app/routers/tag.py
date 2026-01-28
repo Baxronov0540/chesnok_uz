@@ -1,5 +1,4 @@
-from fastapi import APIRouter,HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException
 from sqlalchemy import select
 
 from app.models import Tag
@@ -34,11 +33,11 @@ async def update_tag(session: db_deb, update_data: TagUpdateRequest, tag_id: int
     stmt = select(Tag).where(Tag.id == tag_id)
     res = session.execute(stmt).scalars().first()
     if res:
-     res.name = update_data.name
-     res.slug = generate_slug(update_data.name)
-     session.commit()
-     session.refresh(res)
-     return res
+        res.name = update_data.name
+        res.slug = generate_slug(update_data.name)
+        session.commit()
+        session.refresh(res)
+        return res
     raise HTTPException(status_code=404, detail="not found")
 
 

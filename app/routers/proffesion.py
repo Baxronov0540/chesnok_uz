@@ -1,5 +1,4 @@
-from fastapi import APIRouter,HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException
 from sqlalchemy import select
 
 from app.database import db_deb
@@ -41,7 +40,7 @@ async def proffesion_update(
         session.commit()
         session.refresh(stmt)
         return stmt
-    raise HTTPException(status_code=404,detail="not found")
+    raise HTTPException(status_code=404, detail="not found")
 
 
 @router.delete("/delete/{proffesion_id}/")
