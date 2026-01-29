@@ -9,6 +9,7 @@ from app.routers import proffesion_router
 from app.routers import post_tag_router
 from app.routers import user_router
 from app.routers import comment_router
+from app.routers import user_search_router
 
 app = FastAPI(
     title="Chesnokdan achiq haqiqatlar",
@@ -22,3 +23,4 @@ app.include_router(proffesion_router)
 app.include_router(post_tag_router)
 app.include_router(user_router)
 app.include_router(comment_router)
+app.include_router(user_search_router)

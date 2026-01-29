@@ -49,6 +49,7 @@ class Post(BaseModel):
     slug: Mapped[str] = mapped_column(String(100), unique=True)
     body: Mapped[str] = mapped_column(Text)
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"))
+    user_id:Mapped[int]=mapped_column(BigInteger,ForeignKey("users.id"),nullable=True)
     views_count: Mapped[int] = mapped_column(BigInteger, default=0)
     likes_count: Mapped[int] = mapped_column(BigInteger, default=0)
     comments_count: Mapped[int] = mapped_column(BigInteger, default=0)
@@ -61,6 +62,7 @@ class Post(BaseModel):
     post_media: Mapped[list["PostMedia"]] = relationship(
         "PostMedia", back_populates="post"
     )
+    user:Mapped["User"]=relationship("User",back_populates="posts")
 
     def __repr__(self):
         return self.title
@@ -87,6 +89,7 @@ class User(BaseModel):
     )
     avatar: Mapped["Media"] = relationship("Media", back_populates="user")
     comments: Mapped[list["Comments"]] = relationship("Comments", back_populates="user")
+    posts:Mapped[list["Post"]]=relationship("Post",back_populates="user")
 
     def __repr__(self):
         return f"User({self.id})"
@@ -140,3 +143,36 @@ class Comments(BaseModel):
 
     user: Mapped["User"] = relationship("User", back_populates="comments")
     post: Mapped["Post"] = relationship("Post", back_populates="comments")
+
+class UserSearch(Base):
+    __tablename__="user_searches"
+
+    id:Mapped[int]=mapped_column(BigInteger,primary_key=True)
+    term:Mapped[str]=mapped_column(String(50),nullable=False)
+    count:Mapped[int]=mapped_column(BigInteger,default=0)
+
+    def __repr__(self):
+        return f"UserSearch{self.term}"
+    
+class Device(BaseModel):
+    __tablename__="devices"
+
+    user_agent:Mapped[str]=mapped_column(String(255),nullable=False) 
+    last_active:Mapped[datetime]=mapped_column(DateTime(timezone=True),nullable=False)
+
+    def __repr__(self)   :
+        return f"Device({self.user_agent})"
+
+class Like(Base):
+    __tablename__="likes"
+
+    id:Mapped[int]=mapped_column(BigInteger,primary_key=True)
+    post_id:Mapped[int]=mapped_column(BigInteger,ForeignKey("posts.id"),onupdate="CASCADE")
+    device_id:Mapped[int]=mapped_column(BigInteger,ForeignKey("devices.id"))
+    created_at:Mapped[datetime]=mapped_column(DateTime(timezone=True),default=func.now())
+
+    def __repr__(self):
+        return f"Like({self.id})"
+    
+
+    
