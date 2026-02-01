@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class PostCreateRequest(BaseModel):
     title: str
     body: str
+    user_id:int
     category_id: int
     views_count: int = 0
     likes_count: int = 0
@@ -16,6 +17,7 @@ class PostListResponse(BaseModel):
     id: int
     title: str
     slug: str
+    user_id:int
     body: str
     category_id: int
     views_count: int

@@ -10,7 +10,8 @@ from app.routers import post_tag_router
 from app.routers import user_router
 from app.routers import comment_router
 from app.routers import user_search_router
-
+from app.routers import weather_router
+from app.routers import auth_router
 app = FastAPI(
     title="Chesnokdan achiq haqiqatlar",
     description="Chesnokuz - news website inspired from Qalampir.uz, built in FastAPI",
@@ -24,3 +25,5 @@ app.include_router(post_tag_router)
 app.include_router(user_router)
 app.include_router(comment_router)
 app.include_router(user_search_router)
+app.include_router(weather_router)
+app.include_router(auth_router)

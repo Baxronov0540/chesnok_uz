@@ -28,4 +28,6 @@ from .comments_schema import (
     CommentUpdateRequest,
 )
 
-from .user_search_schema import UserSearchCreateRequest,UserSearchListResponse
+from .user_search_schema import UserSearchCreateRequest, UserSearchListResponse
+
+from .weather_schema import WeatherResponse

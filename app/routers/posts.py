@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
-from datetime import datetime,timezone,timedelta
+from datetime import datetime, timezone, timedelta
 
-from app.models import Post,PostTag,Tag,User,UserSearch
+from app.models import Post, PostTag, Tag, User, UserSearch
 from app.database import db_deb
 from app.schemas import PostCreateRequest, PostListResponse, PostUpdateRequest
 from app.utils import *
@@ -109,29 +109,23 @@ async def post_deactive(session: db_deb, post_id: int):
 async def search_posts(session: db_deb, q: str):
     stmt = select(Post).where(Post.slug.like(f"%{q.lower()}%"))
     posts = session.execute(stmt).scalars().all()
-    stmt1=select(UserSearch.term)
-    res=session.execute(stmt1).scalars().all()
-    flag=False
+    stmt1 = select(UserSearch.term)
+    res = session.execute(stmt1).scalars().all()
+    flag = False
     if q in res:
-        stmt2=select(UserSearch).where(UserSearch.term.ilike(f"{q}"))
-        res=session.execute(stmt2).scalars().first()
-        res.count+=1
+        stmt2 = select(UserSearch).where(UserSearch.term.ilike(f"{q}"))
+        res = session.execute(stmt2).scalars().first()
+        res.count += 1
         session.commit()
         session.refresh(res)
-        flag=True
+        flag = True
 
     if not flag:
-        trenning=UserSearch(
-            term=q,
-            count=0
-        )
+        trenning = UserSearch(term=q, count=1)
         session.add(trenning)
         session.commit()
         session.refresh(trenning)
     return posts
-
-
-
 
 
 @router.get("/created-at/filter/", response_model=list[PostListResponse])
@@ -143,7 +137,6 @@ async def get_posts_by_created_at(session: db_deb):
         raise HTTPException(status_code=404, detail="Posts not found")
 
     return posts
-
 
 
 @router.get("/filter/", response_model=list[PostListResponse])
@@ -172,21 +165,23 @@ async def get_posts_list(
     res = session.execute(stmt)
     return res.scalars().all()
 
-@router.get("/filter/user/",response_model=PostListResponse)
-async def user_filter(session:db_deb,user_id:int):
-    stmt=select(Post).join(User,User.id==Post.user_id)
+
+@router.get("/filter/user/", response_model=PostListResponse)
+async def user_filter(session: db_deb, user_id: int):
+    stmt = select(Post).join(User, User.id == Post.user_id)
     if user_id:
-        stmt=stmt.where(User.id==user_id)
-        res=session.execute(stmt).scalars()
-    return     res
-
-
-@router.get("/trenning/",response_model=PostListResponse)
-async def trenning_post(session:db_deb):
-    stmt=select(Post).where(Post.created_at>=datetime.now(timezone.utc)-timedelta(days=7)).order_by(Post.likes_count.desc()).limit(5)
-    res=session.execute(stmt)
+        stmt = stmt.where(User.id == user_id)
+        res = session.execute(stmt).scalars()
     return res
 
 
-
-
+@router.get("/trenning/", response_model=PostListResponse)
+async def trenning_post(session: db_deb):
+    stmt = (
+        select(Post)
+        .where(Post.created_at >= datetime.now(timezone.utc) - timedelta(days=7))
+        .order_by(Post.likes_count.desc())
+        .limit(5)
+    )
+    res = session.execute(stmt)
+    return res
