@@ -2,20 +2,22 @@ from fastapi import APIRouter, HTTPException
 from sqlalchemy import select
 
 from app.database import db_deb
-from app.models import User,Post
-from app.schemas import UserListResponse, UserCreateRequest,PostCreateRequest,PostListResponse
+from app.models import User
+from app.schemas import (
+    UserListResponse,
+)
 from app.utils import *
+
 router = APIRouter(prefix="/user-auth", tags=["UserAuth"])
 
-@router.get("/profile/",response_model=UserListResponse)
-async def  user_profile(session:db_deb,email:str):
 
-    stmt=select(User).where(User.email==email)
-    res=session.execute(stmt).scalars().first()
+@router.get("/profile/", response_model=UserListResponse)
+async def user_profile(session: db_deb, email: str):
+    stmt = select(User).where(User.email == email)
+    res = session.execute(stmt).scalars().first()
     if not res:
-        raise HTTPException(status_code=404,detail="User Not found")
+        raise HTTPException(status_code=404, detail="User Not found")
     return res
-
 
 
 # @router.post("/create", response_model=PostListResponse)
@@ -38,10 +40,3 @@ async def  user_profile(session:db_deb,email:str):
 
 #         return post
 #     return HTTPException(status_code=400)
-
-
-
-
-
-
-

@@ -31,3 +31,4 @@ from .comments_schema import (
 from .user_search_schema import UserSearchCreateRequest, UserSearchListResponse
 
 from .weather_schema import WeatherResponse
+from .auth import UserRegisterRequest, UserRegisterResponse, UserProfileResponse

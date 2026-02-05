@@ -19,7 +19,6 @@ branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 
-
 def upgrade():
     # 1️⃣ NULL bo‘lganlarni hozirgi vaqt bilan to‘ldiramiz
     op.execute("UPDATE comments SET created_at = NOW() WHERE created_at IS NULL ")

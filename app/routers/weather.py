@@ -22,30 +22,30 @@ async def get_weather_today(city: str):
 
     return resp.json()
 
-class WeatherType(str,Enum):
-    
-    toshkent="Toshkent"
-    samarqand="Samarqand"
-    navoi="Navoi"
-    buxoro="Buxoro"
-    namangan="Namangan"
-    andijon="Andijon"
-    fergana="Farg'ona"
-    sirdaryo="Sirdaryo"
-    surxondaryo="Surxondaryo"
-    qashqadaryo="Qashqadaryo"
-    xorazm="Xorazm"
-    qaraqalpogiston="Qaraqalpog'iston"
 
-    
-@router.get("/Uzbekistan/today",response_model=WeatherResponse)
-async def uzbek_weather(city:WeatherType):
+class WeatherType(str, Enum):
+    toshkent = "Toshkent"
+    samarqand = "Samarqand"
+    navoi = "Navoi"
+    buxoro = "Buxoro"
+    namangan = "Namangan"
+    andijon = "Andijon"
+    fergana = "Farg'ona"
+    sirdaryo = "Sirdaryo"
+    surxondaryo = "Surxondaryo"
+    qashqadaryo = "Qashqadaryo"
+    xorazm = "Xorazm"
+    qaraqalpogiston = "Qaraqalpog'iston"
+
+
+@router.get("/Uzbekistan/today", response_model=WeatherResponse)
+async def uzbek_weather(city: WeatherType):
     try:
         async with httpx.AsyncClient() as client:
-            resp=await client.get(
+            resp = await client.get(
                 url=f"https://api.openweathermap.org/data/2.5/weather?q={city.value}&units=metric&appid={API_KEY}"
             )
             resp.raise_for_status()
     except Exception as e:
-        raise HTTPException(status_code=404,detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e))
     return resp.json()

@@ -73,9 +73,13 @@ class Post(BaseModel):
 class User(BaseModel):
     __tablename__ = "users"
 
-    proffesion_id: Mapped[int] = mapped_column(ForeignKey("proffesions.id"))
+    proffesion_id: Mapped[int] = mapped_column(
+        ForeignKey("proffesions.id"), nullable=True
+    )
     email: Mapped[str] = mapped_column(String(100), unique=True)
-    avatar_id: Mapped[int] = mapped_column(ForeignKey("medias.id"), onupdate="SET NULL")
+    avatar_id: Mapped[int] = mapped_column(
+        ForeignKey("medias.id"), onupdate="SET NULL", nullable=True
+    )
     password_hash: Mapped[str] = mapped_column(String(100), nullable=False)
     first_name: Mapped[str] = mapped_column(String(100), nullable=True)
     last_name: Mapped[str] = mapped_column(String(100), nullable=True)

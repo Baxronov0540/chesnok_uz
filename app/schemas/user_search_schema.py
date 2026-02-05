@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 
 
-
 class UserSearchCreateRequest(BaseModel):
     term: str
     count: int | None = 0
