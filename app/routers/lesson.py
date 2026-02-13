@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Cookie, Header, HTTPException
+from fastapi import APIRouter, Header, HTTPException
 from typing import Annotated
 from sqlalchemy import select
 from app.database import db_deb
@@ -12,7 +12,7 @@ SECRET_TOKEN = "asror"
 @router.get("/protected/")
 async def protected_api(
     db: db_deb, email: str, X_chesnok_token: Annotated[str | None, Header()] = None
-):
+):#noqa
     if not X_chesnok_token:
         raise HTTPException(status_code=401, detail="no chesnok Token ")
 

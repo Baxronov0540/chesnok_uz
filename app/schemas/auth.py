@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, model_validator
 from zxcvbn import zxcvbn
 from datetime import datetime
+from app.schemas.common import ProffesionInline
 
 
 class UserRegisterRequest(BaseModel):
@@ -16,7 +17,7 @@ class UserRegisterRequest(BaseModel):
         if len(self.password) < 8:
             raise ValueError("password must be at least 8 characters long")
 
-        if zxcvbn(self.password) and zxcvbn(self.password)["score"] < 4:
+        if zxcvbn(self.password) and zxcvbn(self.password)["score"] < 2:
             raise ValueError("password is weak")
         return self
 
@@ -33,3 +34,29 @@ class UserProfileResponse(BaseModel):
     first_name: str | None = None
     last_name: str | None = None
     bio: str | None = None
+    proffesion: ProffesionInline | None = None
+    post_count: int
+    post_read_count: int
+    is_active: bool
+    is_staff: bool
+    is_supperuser: bool
+
+
+class UserProfilUpdateRequest(BaseModel):
+    email: EmailStr | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    bio: str | None = None
+    proffession_id: int | None = None
+
+
+# SESSION AUTH
+
+
+class SessionTokenResponse(BaseModel):
+    token: str
+
+
+class UserLoginRequest(BaseModel):
+    email: EmailStr
+    password: str

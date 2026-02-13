@@ -4,14 +4,14 @@ from sqlalchemy import select
 from app.models import Tag
 from app.database import db_deb
 from app.schemas import TagCreateRequest, TagListResponse, TagUpdateRequest
-from app.utils import *
+from app.utils import generate_slug  # noqa
 
 router = APIRouter(prefix="/tags", tags=["Tags"])
 
 
 @router.post("/create", response_model=TagListResponse)
 async def create_tag(session: db_deb, create_data: TagCreateRequest):
-    tag = Tag(name=create_data.name, slug=generate_slug(create_data.name))
+    tag = Tag(name=create_data.name, slug=generate_slug(create_data.name))  # noqa
     session.add(tag)
     session.commit()
     session.refresh(tag)
@@ -34,7 +34,7 @@ async def update_tag(session: db_deb, update_data: TagUpdateRequest, tag_id: int
     res = session.execute(stmt).scalars().first()
     if res:
         res.name = update_data.name
-        res.slug = generate_slug(update_data.name)
+        res.slug = generate_slug(update_data.name)  # noqa
         session.commit()
         session.refresh(res)
         return res

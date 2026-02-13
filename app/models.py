@@ -76,9 +76,9 @@ class User(BaseModel):
     proffesion_id: Mapped[int] = mapped_column(
         ForeignKey("proffesions.id"), nullable=True
     )
-    email: Mapped[str] = mapped_column(String(100), unique=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=True)
     avatar_id: Mapped[int] = mapped_column(
-        ForeignKey("medias.id"), onupdate="SET NULL", nullable=True
+        ForeignKey("medias.id", ondelete="SET NULL"), nullable=True
     )
     password_hash: Mapped[str] = mapped_column(String(100), nullable=False)
     first_name: Mapped[str] = mapped_column(String(100), nullable=True)
@@ -88,7 +88,9 @@ class User(BaseModel):
     post_read_count: Mapped[int] = mapped_column(BigInteger, default=0)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_staff: Mapped[bool] = mapped_column(Boolean, default=True)
-    is_supperuser: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_supperuser: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
+    deleted_email: Mapped[str] = mapped_column(String(100), nullable=True)
 
     proffesion: Mapped["Proffesion"] = relationship(
         "Proffesion", back_populates="users"
@@ -96,6 +98,9 @@ class User(BaseModel):
     avatar: Mapped["Media"] = relationship("Media", back_populates="user")
     comments: Mapped[list["Comments"]] = relationship("Comments", back_populates="user")
     posts: Mapped[list["Post"]] = relationship("Post", back_populates="user")
+    user_sessions: Mapped[list["UserSessionToken"]] = relationship(
+        "UserSessionToken", back_populates="user", lazy="raise_on_sql"
+    )
 
     def __repr__(self):
         return f"User({self.id})"
@@ -173,12 +178,28 @@ class Device(BaseModel):
         return f"Device({self.user_agent})"
 
 
+class UserSessionToken(Base):
+    __tablename__ = "user_sessions"
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id"))
+    token: Mapped[str] = mapped_column(String(255), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=func.now()
+    )
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+    user: Mapped["User"] = relationship("User", back_populates="user_sessions")
+
+    def __repr__(self):
+        return self.user_id
+
+
 class Like(Base):
     __tablename__ = "likes"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     post_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("posts.id"), onupdate="CASCADE"
+        BigInteger, ForeignKey("posts.id", ondelete="CASCADE")
     )
     device_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("devices.id"))
     created_at: Mapped[datetime] = mapped_column(

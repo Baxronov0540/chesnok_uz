@@ -8,9 +8,8 @@ from app.schemas import (
     ProffesionListResponse,
     ProffesionUpdateRequest,
 )
-from app.utils import *
 
-router = APIRouter(prefix="/proffesion", tags=["Proffesion"])
+router = APIRouter(prefix="/proffesion", tags=["Proffesion"])  # noqa
 
 
 @router.post("/create", response_model=ProffesionListResponse)

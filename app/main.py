@@ -13,6 +13,7 @@ from app.routers import user_search_router
 from app.routers import weather_router
 from app.routers import auth_router
 from app.routers import lesson_router
+from app.routers import admin_router
 
 app = FastAPI(
     title="Chesnokdan achiq haqiqatlar",
@@ -20,6 +21,7 @@ app = FastAPI(
 )
 
 app.include_router(auth_router)
+app.include_router(admin_router)
 app.include_router(posts_router)
 app.include_router(tags_router)
 app.include_router(category_router)

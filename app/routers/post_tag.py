@@ -4,7 +4,6 @@ from fastapi.responses import JSONResponse
 from app.database import db_deb
 from app.models import PostTag
 from app.schemas import PostTagCreateRequest, PostTagListResponse
-from app.utils import *
 
 router = APIRouter(prefix="/post_tag", tags=["PostTag"])
 

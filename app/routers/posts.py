@@ -1,14 +1,22 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.security import HTTPBasic
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from datetime import datetime, timezone, timedelta
 
+
 from app.models import Post, PostTag, Tag, User, UserSearch
 from app.database import db_deb
-from app.schemas import PostCreateRequest, PostListResponse, PostUpdateRequest
-from app.utils import *
+from app.schemas import (
+    PostCreateRequest,
+    PostListResponse,
+    PostUpdateRequest,
+    current_user_basic_dep,
+)
+from app.utils import generate_slug  # noqa
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
+basic = HTTPBasic()
 
 
 @router.get("/", response_model=list[PostListResponse])
@@ -22,12 +30,21 @@ async def get_posts(session: db_deb, is_active: bool = None):
 
 
 @router.post("/create", response_model=PostListResponse)
-async def post_create(session: db_deb, create_data: PostCreateRequest):
+async def post_create(
+    session: db_deb,
+    create_data: PostCreateRequest,
+    current_user: current_user_basic_dep,
+):
+    if not current_user.is_supperuser:
+        raise HTTPException(
+            status_code=403, detail="bu userni post qo'shihga haqqi yuq"
+        )
     post = Post(
         title=create_data.title,
         body=create_data.body,
-        slug=generate_slug(create_data.title),
+        slug=generate_slug(create_data.title),  # noqa
         category_id=create_data.category_id,
+        user_id=current_user.id,
     )
 
     session.add(post)
