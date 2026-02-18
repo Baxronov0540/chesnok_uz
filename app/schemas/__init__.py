@@ -37,5 +37,6 @@ from .auth import (
     UserProfileResponse,  # noqa
     UserProfilUpdateRequest,  # noqa
     UserLoginRequest,  # noqa
+    RefreshTokenRequest,  # noqa
 )
-from .dependencies import current_user_basic_dep, session_auth_dep  # noqa
+from .dependencies import current_user_basic_dep, session_auth_dep, current_user_jwt_dep  # noqa

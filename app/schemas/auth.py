@@ -60,3 +60,8 @@ class SessionTokenResponse(BaseModel):
 class UserLoginRequest(BaseModel):
     email: EmailStr
     password: str
+
+
+# JWT AUTH
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str

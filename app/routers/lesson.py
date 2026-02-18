@@ -12,7 +12,7 @@ SECRET_TOKEN = "asror"
 @router.get("/protected/")
 async def protected_api(
     db: db_deb, email: str, X_chesnok_token: Annotated[str | None, Header()] = None
-):#noqa
+):  # noqa
     if not X_chesnok_token:
         raise HTTPException(status_code=401, detail="no chesnok Token ")
 

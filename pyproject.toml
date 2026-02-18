@@ -15,6 +15,7 @@ dependencies = [
     "pydantic-settings>=2.12.0",
     "pydantic[all,email]>=2.12.5",
     "python-dotenv>=1.2.1",
+    "python-jose>=3.5.0",
     "ruff>=0.14.14",
     "sqlalchemy>=2.0.45",
     "uvicorn>=0.40.0",
