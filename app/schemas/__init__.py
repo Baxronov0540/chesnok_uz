@@ -40,3 +40,5 @@ from .auth import (
     RefreshTokenRequest,  # noqa
 )
 from .dependencies import current_user_basic_dep, session_auth_dep, current_user_jwt_dep  # noqa
+
+from .exceptions import zero_division_error,AnasbekSleepingException,anasbek_slepp_error_exc,rate_time_limet_error_exc,RateTimeLimetException

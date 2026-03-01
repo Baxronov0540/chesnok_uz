@@ -12,7 +12,6 @@ from .weather import router as weather_router
 # from .user_auth import user_profile
 from .lesson import router as lesson_router
 from .auth import auth_router
-from .admin import admin_router
 
 __all__ = [
     "posts_router",
@@ -26,5 +25,5 @@ __all__ = [
     "weather_router",
     "auth_router",
     "lesson_router",
-    "admin_router",
+
 ]

@@ -76,3 +76,7 @@ async def profil_logout(session: db_deb, current_user: session_auth_dep):
     if token:
         session.delete(token)
         session.commit()
+
+
+
+

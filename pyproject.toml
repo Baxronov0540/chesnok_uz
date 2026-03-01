@@ -16,8 +16,12 @@ dependencies = [
     "pydantic[all,email]>=2.12.5",
     "python-dotenv>=1.2.1",
     "python-jose>=3.5.0",
+    "python-multipart>=0.0.22",
+    "redis>=7.2.0",
     "ruff>=0.14.14",
+    "slowapi>=0.1.9",
     "sqlalchemy>=2.0.45",
+    "starlette-admin>=0.16.0",
     "uvicorn>=0.40.0",
     "zxcvbn>=4.5.0",
 ]
